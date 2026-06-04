@@ -1,4 +1,6 @@
-## Installation Guide
+# Tara - Finance Research Agent 
+
+## Installations
 ```js
 1. npm init -y
 2. npm install express pg dotenv zod cors pino helmet morgan uuid
