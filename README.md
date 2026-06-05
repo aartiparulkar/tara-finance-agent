@@ -9,3 +9,8 @@
 5. npm i --save-dev @types/pg
 6. npm install -D tsx
 ```
+
+## Curl Commands
+```
+curl -X POST http://localhost:3000/ask -H "Content-Type:application/json" -d "{\"question\":\"What is my total spend?\"}"
+```

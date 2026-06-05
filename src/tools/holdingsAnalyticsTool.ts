@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { createTool } from '@mastra/core/tools'
 
 import {
   getPortfolioValue,
@@ -16,39 +17,45 @@ const holdingsAnalyticsSchema = z.object({
   ])
 });
 
-export async function holdingsAnalyticsTool(input: unknown) : Promise<ToolResponse<any>> {
+export const holdingsAnalyticsTool = createTool ({
 
-  try {
-    const validated = holdingsAnalyticsSchema.parse(input);
+  id: "holdings_analytics_tool",
+  description: "Provides analytics on financial holdings, such as current portfolio value and performance of individual holdings.",
+  inputSchema: holdingsAnalyticsSchema,
 
-    switch (validated.analysis_type) {
-      case "portfolio_value":
-        return {
-          success: true,
-          data: await getPortfolioValue()
-        };
+  execute: async ({ context }) => {
+    try {
+      const validated = holdingsAnalyticsSchema.parse(context);
 
-      case "holdings_performance":
-        return {
-          success: true,
-          data: await getHoldingsPerformance()
-        };
+      switch (validated.analysis_type) {
+        case "portfolio_value":
+          return {
+            success: true,
+            data: await getPortfolioValue()
+          };
 
-      default:
-        return {
-          success: false,
-          error: "INVALID_ANALYSIS_TYPE",
-          message: "Unsupported analysis type."
-        };
+        case "holdings_performance":
+          return {
+            success: true,
+            data: await getHoldingsPerformance()
+          };
+
+        default:
+          return {
+            success: false,
+            error: "INVALID_ANALYSIS_TYPE",
+            message: "Unsupported analysis type."
+          };
+      }
+
+    } catch (error) {
+
+      return {
+        success: false,
+        error: "HOLDINGS_TOOL_ERROR",
+        message:
+          error instanceof Error ? error.message : "Unknown error"
+      };
     }
-
-  } catch (error) {
-
-    return {
-      success: false,
-      error: "HOLDINGS_TOOL_ERROR",
-      message:
-        error instanceof Error ? error.message : "Unknown error"
-    };
-  }
-}
+  },
+});

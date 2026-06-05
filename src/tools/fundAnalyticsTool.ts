@@ -1,12 +1,7 @@
 import { z } from "zod";
-
-import {
-  getFundReturn
-} from "../services/fundService";
-
-import {
-  ToolResponse
-} from "../types/tool.types";
+import { createTool } from '@mastra/core/tools'
+import { getFundReturn } from "../services/fundService";
+import { ToolResponse } from "../types/tool.types";
 
 const fundAnalyticsSchema = z.object({
   analysis_type: z.enum([
@@ -16,10 +11,14 @@ const fundAnalyticsSchema = z.object({
   fund_name: z.string()
 });
 
-export async function fundAnalyticsTool(input: unknown): Promise<ToolResponse<any>> {
-  
+export const fundAnalyticsTool = createTool ({
+  id: "fund_analytics_tool",
+  description: "Provides analytics on financial funds, such as historical returns based on NAV data.",
+  inputSchema: fundAnalyticsSchema,
+
+  execute: async ({ context }) => {
     try {
-    const validated = fundAnalyticsSchema.parse(input);
+    const validated = fundAnalyticsSchema.parse(context);
 
     switch (validated.analysis_type) {
       case "fund_return":
@@ -54,4 +53,5 @@ export async function fundAnalyticsTool(input: unknown): Promise<ToolResponse<an
         error instanceof Error ? error.message : "Unknown error"
     };
   }
-}
+},
+});

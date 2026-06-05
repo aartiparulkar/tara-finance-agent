@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { createTool } from '@mastra/core/tools'
 
 import {
   getTotalSpend,
@@ -8,7 +9,6 @@ import {
   getLargestTransactions,
 } from "../services/transactionService";
 
-import { ToolResponse } from "../types/tool.types";
 
 const transactionAnalyticsSchema = z.object({
   analysis_type: z.enum([
@@ -20,54 +20,60 @@ const transactionAnalyticsSchema = z.object({
   ])
 });
 
-export async function transactionAnalyticsTool(input: unknown): Promise<ToolResponse<any>> {
-  try {
-    const validated = transactionAnalyticsSchema.parse(input);
+export const transactionAnalyticsTool = createTool ({
+  id: "transaction_analytics_tool",
+  description: "Provides various analytics on financial transactions, such as total spend, spend by category, top merchants, monthly trends, and largest transactions.",
+  inputSchema: transactionAnalyticsSchema,
 
-    switch (validated.analysis_type) {
-      case "total_spend":
-        return {
-          success: true,
-          data: await getTotalSpend()
-        };
+  execute: async ({ context }) => {
 
-      case "spend_by_category":
-        return {
-          success: true,
-          data: await getSpendByCategory()
-        };
+    try {
+      const validated = transactionAnalyticsSchema.parse(context);
+      switch (validated.analysis_type) {
+        case "total_spend":
+          return {
+            success: true,
+            data: await getTotalSpend()
+          };
 
-      case "top_merchants":
-        return {
-          success: true,
-          data: await getTopMerchants()
-        };
+        case "spend_by_category":
+          return {
+            success: true,
+            data: await getSpendByCategory()
+          };
 
-      case "monthly_trend":
-        return {
-          success: true,
-          data: await getMonthlySpendTrend()
-        };
+        case "top_merchants":
+          return {
+            success: true,
+            data: await getTopMerchants()
+          };
 
-      case "largest_transactions":
-        return {
-          success: true,
-          data: await getLargestTransactions()
-        };
+        case "monthly_trend":
+          return {
+            success: true,
+            data: await getMonthlySpendTrend()
+          };
 
-      default:
-        return {
-          success: false,
-          error: "INVALID_ANALYSIS_TYPE",
-          message: "Unsupported analysis type."
-        };
+        case "largest_transactions":
+          return {
+            success: true,
+            data: await getLargestTransactions()
+          };
+
+        default:
+          return {
+            success: false,
+            error: "INVALID_ANALYSIS_TYPE",
+            message: "Unsupported analysis type."
+          };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: "TRANSACTION_TOOL_ERROR",
+        message:
+          error instanceof Error ? error.message : "Unknown error"
+      };
     }
-  } catch (error) {
-    return {
-      success: false,
-      error: "TRANSACTION_TOOL_ERROR",
-      message:
-        error instanceof Error ? error.message : "Unknown error"
-    };
-  }
-}
+  },
+});
