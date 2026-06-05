@@ -9,3 +9,15 @@ export function logInfo(message: string, metadata?: unknown) {
     })
   );
 }
+
+export function logError(message: string, error?: unknown) {
+  console.error(
+    JSON.stringify({
+      level: "error",
+      message,
+      error,
+      timestamp:
+        new Date().toISOString()
+    })
+  );
+}

@@ -1,13 +1,13 @@
-import { pool } from "../db/connection";
+import { pool } from "../db/connection.js";
 
 import {
   GET_PORTFOLIO_VALUE,
   GET_HOLDINGS_PERFORMANCE
-} from "../db/queries/holdings.sql";
+} from "../db/queries/holdings.sql.js";
 
 import {
   calculatePercentageChange
-} from "./analysticsHelpers";
+} from "./analysticsHelpers.js";
 
 export async function getPortfolioValue() {
   const result = await pool.query(GET_PORTFOLIO_VALUE);

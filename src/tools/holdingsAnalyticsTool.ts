@@ -4,11 +4,7 @@ import { createTool } from '@mastra/core/tools'
 import {
   getPortfolioValue,
   getHoldingsPerformance
-} from "../services/holdingsService";
-
-import {
-  ToolResponse
-} from "../types/tool.types";
+} from "../services/holdingsService.js";
 
 const holdingsAnalyticsSchema = z.object({
   analysis_type: z.enum([

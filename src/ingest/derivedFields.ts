@@ -1,7 +1,7 @@
-import { normalizeMerchant } from "./normalizeMerchants";
+import { normalizeMerchant } from "./normalizeMerchants.js";
 
-import { detectRefund } from "./detectRefunds";
-import { detectTransfer } from "./detectTransfers";
+import { detectRefund } from "./detectRefunds.js";
+import { detectTransfer } from "./detectTransfers.js";
 
 export function deriveTransactionFields(transaction: any) {
   return {

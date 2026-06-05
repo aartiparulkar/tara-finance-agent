@@ -7,7 +7,7 @@ import {
   getTopMerchants,
   getMonthlySpendTrend,
   getLargestTransactions,
-} from "../services/transactionService";
+} from "../services/transactionService.js";
 
 
 const transactionAnalyticsSchema = z.object({

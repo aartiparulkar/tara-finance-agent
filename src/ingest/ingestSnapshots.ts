@@ -4,15 +4,16 @@ import { fileURLToPath } from "url";
 import path from "path";
 import dotenv from "dotenv";
 
-import { pool } from "../db/connection";
-import { transactionSchema } from "./validators";
-import { deriveTransactionFields } from "./derivedFields";
+import { pool } from "../db/connection.js";
+import { transactionSchema } from "./validators.js";
+import { deriveTransactionFields } from "./derivedFields.js";
 
 dotenv.config();
 
+const snapshotName = process.argv[2] || "sample_a";
 
 const SNAPSHOT_PATH = fileURLToPath(
-    new URL("../../data/sample_a", import.meta.url)
+    new URL(`../../data/${snapshotName}`, import.meta.url)
 );
 
 async function ingestTransactions() {

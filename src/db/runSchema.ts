@@ -1,6 +1,5 @@
 import fs from "fs";
-
-import { pool } from "./connection";
+import { pool } from "./connection.js";
 
 async function runSchema() {
   try {

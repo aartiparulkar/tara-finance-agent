@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { createTool } from '@mastra/core/tools'
-import { getFundReturn } from "../services/fundService";
-import { ToolResponse } from "../types/tool.types";
+import { getFundReturn } from "../services/fundService.js";
 
 const fundAnalyticsSchema = z.object({
   analysis_type: z.enum([

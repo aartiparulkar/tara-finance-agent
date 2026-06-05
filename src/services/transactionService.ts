@@ -1,4 +1,4 @@
-import { pool } from "../db/connection";
+import { pool } from "../db/connection.js";
 
 import {
   GET_TOTAL_SPEND,
@@ -6,7 +6,7 @@ import {
   GET_TOP_MERCHANTS,
   GET_MONTHLY_SPEND,
   GET_LARGEST_TRANSACTIONS,
-} from "../db/queries/transactions.sql";
+} from "../db/queries/transactions.sql.js";
 
 
 export async function getTotalSpend() {

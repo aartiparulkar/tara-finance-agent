@@ -1,5 +1,5 @@
-import { taraAgent } from "./taraAgent";
-import { logInfo } from "../utils/logging";
+import { taraAgent } from "./taraAgent.js";
+import { logInfo, logError } from "../utils/logging.js";
 
 // export async function askTara(question: string) {
 //     const response = await taraAgent.generate(question);
@@ -10,14 +10,16 @@ import { logInfo } from "../utils/logging";
 // }
 
 export async function askTara(question: string) {
-  console.log("askTara called");
-
   try {
+    logInfo("Received question for Tara", { question });
+
     const response = await taraAgent.generate(question);
+    logInfo("Tara response generated", { response: response.text });
+
     return response.text;
 
   } catch (err) {
-    console.error("AGENT ERROR:", err);
+    logError("Agent Orchestration Failed", err);
     throw err;
   }
 }

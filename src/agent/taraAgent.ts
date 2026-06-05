@@ -3,10 +3,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import { transactionAnalyticsTool } from "../tools/transactionAnalyticsTool";
-import { fundAnalyticsTool } from "../tools/fundAnalyticsTool";
-import { holdingsAnalyticsTool } from "../tools/holdingsAnalyticsTool";
-import { SYSTEM_PROMPT } from "./systemPrompt";
+import { transactionAnalyticsTool } from "../tools/transactionAnalyticsTool.js";
+import { fundAnalyticsTool } from "../tools/fundAnalyticsTool.js";
+import { holdingsAnalyticsTool } from "../tools/holdingsAnalyticsTool.js";
+import { SYSTEM_PROMPT } from "./systemPrompt.js";
 
 
 export const taraAgent = new Agent({
@@ -19,5 +19,4 @@ export const taraAgent = new Agent({
     holdingsAnalyticsTool
   }
 });
-console.dir(taraAgent, { depth: 3 });
 

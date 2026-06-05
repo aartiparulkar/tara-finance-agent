@@ -33,20 +33,6 @@ CREATE TABLE IF NOT EXISTS holdings (
       REFERENCES funds(fund_id)
 );
 
-CREATE TABLE IF NOT EXISTS holdings (
-    holding_id UUID PRIMARY KEY,
-    user_id TEXT NOT NULL,
-    fund_id UUID NOT NULL,
-    units NUMERIC(14,4) NOT NULL,
-    purchase_nav NUMERIC(14,4) NOT NULL,
-    purchase_date DATE NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW(),
-
-    CONSTRAINT fk_fund
-      FOREIGN KEY(fund_id)
-      REFERENCES funds(fund_id)
-);
-
 CREATE INDEX IF NOT EXISTS idx_transactions_date
 ON transactions(transaction_date);
 

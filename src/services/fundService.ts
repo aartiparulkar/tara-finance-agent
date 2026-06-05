@@ -1,13 +1,13 @@
-import { pool } from "../db/connection";
+import { pool } from "../db/connection.js";
 
 import {
   GET_FUND_NAV_RANGE,
   GET_BEST_FUNDS
-} from "../db/queries/funds.sql";
+} from "../db/queries/funds.sql.js";
 
 import {
   calculatePercentageChange
-} from "./analysticsHelpers";
+} from "./analysticsHelpers.js";
 
 export async function getFundReturn(fundName: string) {
   const result = await pool.query(GET_FUND_NAV_RANGE, [fundName]);
