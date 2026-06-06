@@ -1,53 +1,131 @@
 {
-  "name": "tara_finance_agent",
-  "version": "1.0.0",
-  "type": "module",
-  "description": "```js\r 1. npm init -y\r 2. npm install express pg dotenv zod cors pino\r 3. npm install -D typescript ts-node-dev @types/node @types/express @types/cors vitest\r 4. npx tsc --init\r ```",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs",
-    "test": "tests"
-  },
-  "scripts": {
-    "dev": "tsx watch src/app.ts",
-    "build": "tsc",
-    "start": "node dist/app.js",
-    "lint": "eslint .",
-    "schema": "tsx watch src/db/runSchema.ts",
-    "ingest": "tsx watch src/ingest/ingestSnapshots.ts",
-    "analytics": "tsx watch scripts/testAnalytics.ts",
-    "tools": "tsx watch scripts/testTools.ts",
-    "evals": "tsx watch src/evals/runEvals.ts",
-    "format": "prettier --write ."
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@mastra/core": "^0.24.9",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "fastest-levenshtein": "^1.0.16",
-    "helmet": "^8.2.0",
-    "morgan": "^1.11.0",
-    "openai": "^6.42.0",
-    "pg": "^8.21.0",
-    "pino": "^10.3.1",
-    "uuid": "^14.0.0",
-    "zod": "^3.25.76"
-  },
-  "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/morgan": "^1.9.10",
-    "@types/node": "^25.9.1",
-    "@types/pg": "^8.20.0",
-    "eslint": "^9.39.4",
-    "prettier": "^3.8.3",
-    "ts-node-dev": "^2.0.0",
-    "tsx": "^4.22.4",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.8"
-  }
+  "question": "What is my total spend?"
 }
+```
+
+---
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "response": "Your total spend is ₹42,300."
+}
+```
+
+---
+
+## GET `/health`
+
+Health monitoring endpoint.
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "uptime": 120,
+  "timestamp": "2026-06-05T10:00:00.000Z"
+}
+```
+
+
+---
+# Deployment
+
+Deployed on Railway: tara-finance-agent-production-db8d.up.railway.app
+
+---
+
+## Run locally
+
+```bash
+cp .env.example .env   # fill in your values
+
+npm install
+
+npm run build
+
+npx tsx src/db/runSchema.ts
+
+npx tsx src/ingest/ingestSnapshot.ts sample_a
+
+npm start
+```
+
+---
+
+## Environment variables
+
+| Variable          | Description                       |
+| ----------------- | --------------------------------- |
+| DATABASE_URL      | Postgres connection string        |
+| ANTHROPIC_API_KEY | Anthropic API key                 |
+| NODE_ENV          | `"development"` or `"production"` |
+| PORT              | HTTP port (default `3000`)        |
+
+---
+
+## Known deployment tradeoffs
+
+* Railway free tier sleeps after 30 min inactivity — first request may have ~5s cold start
+* Free Postgres is limited to 1GB storage, sufficient for 3 snapshots
+* SSL is enabled in production via `rejectUnauthorized: false`
+
+# Example Queries
+
+## Transactions
+
+* What is my total spend?
+* Which merchants do I spend most on?
+* Show my monthly spending trend.
+* Which category do I spend most in?
+
+---
+
+## Investments
+
+* What is my portfolio value?
+* Show holdings performance.
+* What is the return of Axis Bluechip Fund?
+
+---
+
+# Evaluation Strategy
+
+The project uses deterministic evaluation instead of subjective conversational evaluation.
+
+Focus areas:
+
+* financial correctness
+* normalization consistency
+* regression prevention
+* snapshot compatibility
+
+---
+
+# Production Features
+
+* Structured logging
+* Request tracing
+* Centralized error handling
+* Environment validation
+* Graceful shutdown
+* Health checks
+* Typed interfaces
+* Schema validation
+
+---
+
+# Important Engineering Principle
+
+The system intentionally prioritizes:
+
+```text
+deterministic correctness over autonomous AI behavior
+```
+
+This is especially important for finance applications where hallucinated outputs are unacceptable.
+
+---
