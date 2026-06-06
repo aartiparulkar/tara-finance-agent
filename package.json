@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "description": "```js\r 1. npm init -y\r 2. npm install express pg dotenv zod cors pino\r 3. npm install -D typescript ts-node-dev @types/node @types/express @types/cors vitest\r 4. npx tsc --init\r ```",
-  "main": "index.js",
+  "main": "app.js",
   "directories": {
     "doc": "docs",
     "test": "tests"
