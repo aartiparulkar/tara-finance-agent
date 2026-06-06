@@ -39,7 +39,7 @@ const transactionAnalyticsSchema = z.object({
   date_to: z.string().optional(),
   category_a: z.string().optional(),
   category_b: z.string().optional(),
-  include_refunds: z.boolean().optional(),
+  include_refunds: z.boolean().optional().default(false),
 });
 
 console.dir(
@@ -70,7 +70,14 @@ export const transactionAnalyticsTool = createTool ({
   inputSchema: transactionAnalyticsSchema,
   execute: async ({ context }) => {
     try {
-      const validated = transactionAnalyticsSchema.parse(context);
+      const sanitized = Object.fromEntries(
+        Object.entries(context).map(([key, value]) => [
+          key,
+          value === null || value === "" ? undefined : value,
+        ])
+      );
+      
+      const validated = transactionAnalyticsSchema.parse(sanitized);
 
       switch (validated.analysis_type) {
         case "total_spend":

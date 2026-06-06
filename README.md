@@ -246,3 +246,5 @@ Every `/ask` request logs:
 ```
 
 Tool errors log sanitized inputs and error reason. API keys and raw transaction data are never logged.
+
+The screenshots of a successful log and failed log is added in the `docs/` folder.

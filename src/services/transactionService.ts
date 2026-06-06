@@ -50,12 +50,10 @@ export async function queryTransactions(params: {
   date_to?: string | null;
   include_refunds?: boolean;
 }) {
-  const {
-    category = null,
-    merchant = null,
-    date_from = null,
-    date_to = null,
-  } = params;
+  const category  = params.category  && params.category.trim()  !== "" ? params.category  : null;
+  const merchant  = params.merchant  && params.merchant.trim()  !== "" ? params.merchant  : null;
+  const date_from = params.date_from && params.date_from.trim() !== "" ? params.date_from : null;
+  const date_to   = params.date_to   && params.date_to.trim()   !== "" ? params.date_to   : null;
 
   const resolvedMerchant = merchant
     ? `%${await resolveQueryMerchant(merchant)}%`
@@ -67,8 +65,6 @@ export async function queryTransactions(params: {
     date_from,
     date_to,
   ]);
-
-  if(result.rows.length === 0) return [];
 
   return result.rows.map((r: any) => ({
     period: r.period,
@@ -96,21 +92,24 @@ export async function compareCategorySpend(
   date_to?:   string,
 ) {
 
-  try {
-    let resolvedFrom = date_from;
-    let resolvedTo   = date_to;
+  const cleanFrom = date_from && date_from.trim() !== "" ? date_from : undefined;
+  const cleanTo = date_to && date_to.trim() !== "" ? date_to : undefined;
 
-    if(!resolvedFrom || !resolvedTo) {
-      const rangeResult = await pool.query(`
-        SELECT
-          TO_CHAR(MIN(transaction_date), 'YYYY-MM-DD') AS min_date,
-          TO_CHAR(MAX(transaction_date), 'YYYY-MM-DD') AS max_date
-        FROM transactions
-        WHERE is_transfer = FALSE AND amount > 0
-      `);
-      resolvedFrom = resolvedFrom ?? rangeResult.rows[0].min_date;
-      resolvedTo = resolvedTo ?? rangeResult.rows[0].max_date;
-    }
+
+  try {
+    const rangeResult = await pool.query(`
+      SELECT
+        TO_CHAR(MIN(transaction_date), 'YYYY-MM-DD') AS min_date,
+        TO_CHAR(MAX(transaction_date), 'YYYY-MM-DD') AS max_date
+      FROM transactions
+      WHERE is_transfer = FALSE AND amount > 0
+    `);
+
+    const resolvedFrom = cleanFrom ?? rangeResult.rows[0].min_date;
+    const resolvedTo = cleanTo ?? rangeResult.rows[0].max_date;
+
+    console.log("[compareCategorySpend]", { categoryA, categoryB, resolvedFrom, resolvedTo });
+
     const [rowsA, rowsB] = await Promise.all([
       queryTransactions({ category: categoryA, date_from: resolvedFrom, date_to: resolvedTo }),
       queryTransactions({ category: categoryB, date_from: resolvedFrom, date_to: resolvedTo }),
@@ -157,7 +156,7 @@ export async function compareCategorySpend(
       faster_growing: faster,
     };
   } catch (err) {
-    console.error("[compareCategorySpend] Error comparing categories:", err);
+    console.error("[compareCategorySpend] SQL Error:", err);
     throw new Error("Failed to compare category spend");
   }
 
