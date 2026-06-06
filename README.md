@@ -351,7 +351,48 @@ Health monitoring endpoint.
 }
 ```
 
+
 ---
+# Deployment
+
+Deployed on Railway: tara-finance-agent-production-db8d.up.railway.app
+
+---
+
+## Run locally
+
+```bash
+cp .env.example .env   # fill in your values
+
+npm install
+
+npm run build
+
+npx tsx src/db/runSchema.ts
+
+npx tsx src/ingest/ingestSnapshot.ts sample_a
+
+npm start
+```
+
+---
+
+## Environment variables
+
+| Variable          | Description                       |
+| ----------------- | --------------------------------- |
+| DATABASE_URL      | Postgres connection string        |
+| ANTHROPIC_API_KEY | Anthropic API key                 |
+| NODE_ENV          | `"development"` or `"production"` |
+| PORT              | HTTP port (default `3000`)        |
+
+---
+
+## Known deployment tradeoffs
+
+* Railway free tier sleeps after 30 min inactivity — first request may have ~5s cold start
+* Free Postgres is limited to 1GB storage, sufficient for 3 snapshots
+* SSL is enabled in production via `rejectUnauthorized: false`
 
 # Example Queries
 
@@ -369,57 +410,6 @@ Health monitoring endpoint.
 * What is my portfolio value?
 * Show holdings performance.
 * What is the return of Axis Bluechip Fund?
-
----
-
-# Key Design Decisions
-
-## Deterministic Analytics
-
-Financial calculations are NEVER performed by the LLM.
-
-All analytics are handled through:
-
-* SQL
-* deterministic services
-* validated tool outputs
-
-This improves:
-
-* correctness
-* reliability
-* reproducibility
-
----
-
-## Constrained Tool Architecture
-
-The AI agent can only access analytics through validated tools.
-
-This prevents:
-
-* arbitrary SQL generation
-* hallucinated analytics
-* unsafe orchestration
-
----
-
-## Layered Architecture
-
-The system separates:
-
-* orchestration,
-* analytics,
-* persistence,
-* validation,
-* and API handling.
-
-This improves:
-
-* maintainability
-* testing
-* observability
-* scalability
 
 ---
 
@@ -449,22 +439,6 @@ Focus areas:
 
 ---
 
-# Future Improvements
-
-Potential future enhancements:
-
-* Dockerization
-* CI/CD pipelines
-* OpenTelemetry tracing
-* Caching layer
-* Conversational memory
-* Advanced recurring payment detection
-* Embedding-based retrieval
-* Multi-user authentication
-* Streaming responses
-
----
-
 # Important Engineering Principle
 
 The system intentionally prioritizes:
@@ -474,19 +448,5 @@ deterministic correctness over autonomous AI behavior
 ```
 
 This is especially important for finance applications where hallucinated outputs are unacceptable.
-
----
-
-# Assignment Notes
-
-This implementation emphasizes:
-
-* production-grade backend design
-* deterministic analytics
-* structured AI orchestration
-* maintainable architecture
-* operational reliability
-
-rather than prompt-heavy autonomous agent behavior.
 
 ---
