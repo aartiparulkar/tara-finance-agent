@@ -8,8 +8,7 @@ export function normalizeRaw(raw: string): string {
     .trim();
 }
 
-// Call this when the merchant field looks like a reference number (all digits,
-// or starts with UPI/ NEFT/ IMPS/) rather than a real brand name.
+// Call this when the merchant field looks like a reference number
 export function extractFromMemo(memo: string): string | null {
   if (!memo) return null;
 
@@ -120,10 +119,9 @@ export function buildCanonicalMap(
   return canonicalMap;
 }
 
-// Updated guard with minimum character length check
 function shouldMergeOnLcp(strings: string[], lcp: string): boolean {
   if (!lcp) return false;
-  if (lcp.length < 4) return false; // "z", "ol" are never valid canons
+  if (lcp.length < 4) return false;
 
   const lcpWordCount = lcp.split(" ").length;
   const avgWordCount =
@@ -132,7 +130,6 @@ function shouldMergeOnLcp(strings: string[], lcp: string): boolean {
   return lcpWordCount >= 2 || lcpWordCount / avgWordCount >= 0.4;
 }
 
-// Updated bucket key — trigram for short words, full word for long
 function bucketKey(norm: string): string {
   const firstWord = norm.split(" ")[0];
   return firstWord.length <= 6 ? firstWord.slice(0, 3) : firstWord;
@@ -168,7 +165,7 @@ export function applyFuzzyFallback(canonicalMap: Map<string, string>): Map<strin
 }
 
 // ─── Public entry point ───────────────────────────────────────────────────────
-// Call this once at ingest time with ALL merchant strings from the snapshot.
+// Called once at ingest time with ALL merchant strings from the snapshot.
 // Returns a map: rawMerchantString → canonicalName
 //
 // Usage:

@@ -18,6 +18,8 @@
     "analytics": "tsx watch scripts/testAnalytics.ts",
     "tools": "tsx watch scripts/testTools.ts",
     "evals": "tsx watch src/evals/runEvals.ts",
+    "eval:agent": "tsx src/evals/runAgentEvals.ts",
+    "eval:remote": "EVAL_URL=https://tara-finance-agent-production-db8d.up.railway.app tsx src/evals/runAgentEvals.ts",
     "format": "prettier --write ."
   },
   "keywords": [],

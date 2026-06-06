@@ -70,8 +70,6 @@ export const transactionAnalyticsTool = createTool ({
   inputSchema: transactionAnalyticsSchema,
   execute: async ({ context }) => {
     try {
-      console.log("TOOL EXECUTED");
-      console.dir(context);
       const validated = transactionAnalyticsSchema.parse(context);
 
       switch (validated.analysis_type) {

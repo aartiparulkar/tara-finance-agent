@@ -12,8 +12,6 @@ export async function askTara(question: string) {
       { maxSteps: 10 }
     );
 
-    console.dir(response, { depth: null });
-
     const answer = response.text;
     
     const latency = Date.now() - startTime;

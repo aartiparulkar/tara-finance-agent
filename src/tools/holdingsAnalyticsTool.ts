@@ -20,9 +20,6 @@ export const holdingsAnalyticsTool = createTool ({
   inputSchema: holdingsAnalyticsSchema,
 
   execute: async ({ context }) => {
-    
-      console.log("TOOL EXECUTED");
-      console.dir(context);
     try {
       const validated = holdingsAnalyticsSchema.parse(context);
 

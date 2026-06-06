@@ -1,347 +1,113 @@
 # Tara Finance Agent
 
-AI-powered financial analytics backend built using TypeScript, PostgreSQL, Express, and Mastra.
+An AI-powered personal finance research backend. Ask natural language questions about your spending, investments, and holdings, Tara answers using real data from your database, never guessing.
+
+> **Deployed at:** `https://tara-finance-agent-production-db8d.up.railway.app`
 
 ---
 
-# Overview
-
-Tara Finance Agent is an AI finance analytics system that combines:
-
-* deterministic financial analytics,
-* validated structured tools,
-* PostgreSQL-backed ingestion pipelines,
-* and AI orchestration using Mastra.
-
-The system is intentionally designed around a strict architectural principle:
-
-> AI handles orchestration and language generation.
->
-> Deterministic systems handle calculations, analytics, and financial correctness.
-
-This prevents hallucinated financial outputs and ensures reliable analytics behavior.
-
----
-
-# Core Features
-
-## Financial Analytics
-
-* Total spend calculation
-* Spend by category
-* Merchant ranking
-* Monthly spend trends
-* Portfolio valuation
-* Fund return analysis
-* Holdings performance tracking
-* Recurring merchant detection
-
----
-
-## AI Agent Capabilities
-
-* Natural language financial querying
-* Tool-based deterministic analytics
-* Structured orchestration using Mastra
-* Grounded responses from validated tool outputs
-
----
-
-## Production Engineering Features
-
-* PostgreSQL persistence
-* Structured tool contracts
-* Zod validation
-* Deterministic analytics layer
-* Regression evaluation framework
-* Structured logging
-* Centralized error handling
-* Environment validation
-* Health monitoring
-* Graceful shutdown
-
----
-
-# Architecture
-
-```text
-Client
-  ↓
-Express API
-  ↓
-Mastra Agent (Tara)
-  ↓
-Validated Tool Layer
-  ↓
-Deterministic Services
-  ↓
-SQL Analytics
-  ↓
-PostgreSQL
+## How it works
+```
+POST /ask  →  Mastra Agent (Tara)  →  Validated Tools  →  PostgreSQL  →  Answer
 ```
 
----
-
-# Tech Stack
-
-## Backend
-
-* Node.js
-* TypeScript
-* Express
-
-## Database
-
-* PostgreSQL
-* pg
-
-## AI
-
-* Mastra
-* OpenAI
-
-## Validation
-
-* Zod
-
-## Tooling
-
-* ts-node-dev
-* ESLint
-* Prettier
+The AI handles language understanding and tool selection. All numbers come from SQL. The model never does arithmetic.
 
 ---
 
-# Project Structure
+## Quick start
 
-```text
-src/
-│
-├── agent/
-│   ├── orchestration.ts
-│   ├── systemPrompt.ts
-│   └── taraAgent.ts
-│
-├── config/
-│   ├── constants.ts
-│   └── env.ts
-│
-├── db/
-│   ├── connection.ts
-│   ├── runSchema.ts
-│   ├── schema.sql
-│   └── queries/
-│
-├── evals/
-│
-├── ingest/
-│
-├── middleware/
-│
-├── routes/
-│
-├── services/
-│
-├── tools/
-│
-├── types/
-│
-└── utils/
-```
-
----
-
-# Setup Instructions
-
-## 1. Clone Repository
+### 1. Clone and install
 
 ```bash
 git clone https://github.com/aartiparulkar/tara-finance-agent.git
 cd tara-finance-agent
-```
-
----
-
-## 2. Install Dependencies
-
-```bash
 npm install
 ```
 
----
+### 2. Set up environment
 
-# Environment Variables
+```bash
+cp .env.example .env
+```
 
-Create `.env`
+Fill in `.env`:
 
 ```env
 PORT=3000
+NODE_ENV=development
 DATABASE_URL=postgresql://postgres:password@localhost:5432/tara_finance
 OPENAI_API_KEY=your_openai_api_key
 MODEL_NAME=gpt-4.1-mini
-NODE_ENV=development
+LOG_LEVEL=info
 ```
 
----
-
-# Database Setup
-
-## Create Database
+### 3. Create the database
 
 ```sql
 CREATE DATABASE tara_finance;
 ```
 
----
-
-## Run Schema
+### 4. Run schema
 
 ```bash
 npm run schema
 ```
 
-This creates:
-* transactions
-* funds
-* holdings
+Creates `transactions`, `funds`, `holdings` and `merchant_canonical` tables with indexes.
 
-tables along with indexes.
+### 5. Ingest a snapshot
 
----
-
-# Running Ingestion
-
-Place snapshots inside:
-
-```text
-data/
-  sample_a/
-  sample_b/
-  sample_c/
-```
-
----
-
-## Run Ingestion
-
-### Sample A
+Place snapshots in the `data/` folder, then:
 
 ```bash
 npm run ingest sample_a
-```
-
-### Sample B
-
-```bash
 npm run ingest sample_b
-```
-
-### Sample C
-
-```bash
 npm run ingest sample_c
 ```
 
----
-
-# Running Analytics
+### 6. Start the server
 
 ```bash
-npm run analytics
-```
-
-This validates:
-* spend analytics
-* merchant analytics
-* monthly trends
-
----
-
-# Running Tool Tests
-
-```bash
-npm run tools
-```
-
-This validates:
-
-* tool orchestration
-* structured outputs
-* validation handling
-
----
-
-# Running Evals
-
-```bash
-npm run evals
-```
-
-Evaluation framework includes:
-
-* normalization evals
-* analytics evals
-* holdings evals
-* regression tests
-
----
-
-# Starting Development Server
-
-```bash
-npm run dev
+npm run dev       # development
+npm run build && npm start   # production
 ```
 
 ---
 
-# Production Build
+## Environment variables
 
-```bash
-npm run build
-```
-
----
-
-# Start Production Server
-
-```bash
-npm start
-```
+| Variable       | Required | Description                              |
+|----------------|----------|------------------------------------------|
+| `DATABASE_URL` | Yes      | Postgres connection string               |
+| `OPENAI_API_KEY` | Yes    | OpenAI API key                           |
+| `MODEL_NAME`   | Yes      | Model to use (e.g. `gpt-4.1-mini`)       |
+| `PORT`         | No       | HTTP port, defaults to `3000`            |
+| `NODE_ENV`     | No       | `development` or `production`            |
+| `LOG_LEVEL`    | No       | `info`, `debug`, `error` (default `info`)|
 
 ---
 
-# API Endpoints
+## API
 
-## POST `/ask`
+### `POST /ask`
 
-Natural language financial analytics.
+Ask a natural language question about your finances.
 
-### Example Request
-
+**Request:**
 ```json
-{
-  "question": "What is my total spend?"
-}
+{ "question": "How much did I spend on food last month?" }
 ```
 
----
-
-### Example Response
-
+**Response:**
 ```json
 {
   "success": true,
-  "response": "Your total spend is ₹42,300."
+  "response": "Your food spending last month was ₹8,430.00."
 }
 ```
 
----
-
-## GET `/health`
-
-Health monitoring endpoint.
-
-### Example Response
+### `GET /health`
 
 ```json
 {
@@ -351,102 +117,132 @@ Health monitoring endpoint.
 }
 ```
 
-
----
-# Deployment
-
-Deployed on Railway: tara-finance-agent-production-db8d.up.railway.app
-
 ---
 
-## Run locally
+## Example questions
+
+**Spending**
+- What is my total spending?
+- How much did I spend on food in March 2025 after refunds?
+- Which merchants do I spend most on?
+- Compare my food and travel spending — which grew faster?
+- Which transactions look like recurring subscriptions?
+- What was my biggest single expense?
+
+**Investments**
+- What is my portfolio worth today?
+- What is the return of Axis Bluechip Fund?
+- Which of my funds gave the best realised return?
+- Show holdings performance.
+
+---
+
+## Running evals
 
 ```bash
-cp .env.example .env   # fill in your values
+# Unit evals (normalization, analytics, holdings)
+npm run evals
 
-npm install
+# Agent evals — hits live /ask endpoint, checks 14 questions
+npm run eval:agent
 
-npm run build
-
-npx tsx src/db/runSchema.ts
-
-npx tsx src/ingest/ingestSnapshot.ts sample_a
-
-npm start
+# Agent evals against deployed URL
+$env:EVAL_URL="https://tara-finance-agent-production-db8d.up.railway.app"
+npx tsx src/evals/runAgentEvals.ts
 ```
 
 ---
 
-## Environment variables
+## Project structure
 
-| Variable          | Description                       |
-| ----------------- | --------------------------------- |
-| DATABASE_URL      | Postgres connection string        |
-| ANTHROPIC_API_KEY | Anthropic API key                 |
-| NODE_ENV          | `"development"` or `"production"` |
-| PORT              | HTTP port (default `3000`)        |
-
----
-
-## Known deployment tradeoffs
-
-* Railway free tier sleeps after 30 min inactivity — first request may have ~5s cold start
-* Free Postgres is limited to 1GB storage, sufficient for 3 snapshots
-* SSL is enabled in production via `rejectUnauthorized: false`
-
-# Example Queries
-
-## Transactions
-
-* What is my total spend?
-* Which merchants do I spend most on?
-* Show my monthly spending trend.
-* Which category do I spend most in?
-
----
-
-## Investments
-
-* What is my portfolio value?
-* Show holdings performance.
-* What is the return of Axis Bluechip Fund?
-
----
-
-# Evaluation Strategy
-
-The project uses deterministic evaluation instead of subjective conversational evaluation.
-
-Focus areas:
-
-* financial correctness
-* normalization consistency
-* regression prevention
-* snapshot compatibility
-
----
-
-# Production Features
-
-* Structured logging
-* Request tracing
-* Centralized error handling
-* Environment validation
-* Graceful shutdown
-* Health checks
-* Typed interfaces
-* Schema validation
-
----
-
-# Important Engineering Principle
-
-The system intentionally prioritizes:
-
-```text
-deterministic correctness over autonomous AI behavior
+```
+src/
+├── agent/
+│   ├── orchestration.ts      # askTara() — Mastra generate loop
+│   ├── systemPrompt.ts       # Tara's instructions
+│   └── taraAgent.ts          # Agent definition with tools
+│
+├── config/
+│   ├── constants.ts
+│   └── env.ts                # Environment validation
+│
+├── db/
+│   ├── connection.ts         # pg Pool
+│   ├── runSchema.ts          # Creates tables
+│   ├── schema.sql
+│   └── queries/              # SQL query strings
+│
+├── evals/
+│   ├── runAgentEvals.ts      # End-to-end /ask endpoint evals
+│   ├── normalization.evals.ts
+│   ├── analytics.evals.ts
+│   └── assertions.ts
+│
+├── ingest/
+│   ├── ingestSnapshots.ts    # CLI entry point
+│   ├── derivedFields.ts      # merchant_canon, is_refund, is_transfer
+│   ├── normalizeMerchants.ts # LCP clustering pipeline
+│   └── validators.ts         # Zod schemas for JSON input
+│
+├── middleware/               # Error handling, request logging
+├── routes/                   # /ask, /health
+├── services/                 # Business logic, DB calls
+├── tools/                    # Mastra tool definitions
+├── types/
+└── utils/
+    ├── merchantResolver.ts   # Query-time fuzzy merchant matching
+    ├── fundResolver.ts       # Query-time fuzzy fund name matching
+    └── logger.ts
 ```
 
-This is especially important for finance applications where hallucinated outputs are unacceptable.
+---
+
+## Deployment
+
+Deployed on Railway with a managed Postgres instance.
+
+### Deploy your own
+
+1. Push repo to GitHub
+2. Create a new project on [railway.app](https://railway.app)
+3. Add your GitHub repo as the app service
+4. Add a **PostgreSQL** service — Railway injects `DATABASE_URL` automatically
+5. Set variables in the app service:
+   ```
+   NODE_ENV=production
+   OPENAI_API_KEY=your_key
+   MODEL_NAME=gpt-4.1-mini
+   LOG_LEVEL=info
+   ```
+6. Generate a public domain under **Settings → Networking**
+7. Run schema and ingest using the public Postgres URL:
+   ```powershell
+   # Windows PowerShell
+   $env:DATABASE_URL="postgresql://postgres:...@roundhouse.proxy.rlwy.net:PORT/railway"
+   npx tsx src/db/runSchema.ts
+   npx tsx src/ingest/ingestSnapshots.ts sample_a
+   ```
+
+### Known deployment tradeoffs
+
+- Railway free tier sleeps after 30 min inactivity — first request may have ~5s cold start latency
+- Free Postgres is capped at 1 GB storage, sufficient for all three sample snapshots
+- SSL is enabled in production via `rejectUnauthorized: false` on the pg connection
+- `DATABASE_URL` is injected by Railway and must not be set manually in Railway variables
 
 ---
+
+## Observability
+
+Every `/ask` request logs:
+
+```json
+{
+  "question": "...",
+  "answer": "...",
+  "steps": 3,
+  "latency_ms": 1240
+}
+```
+
+Tool errors log sanitized inputs and error reason. API keys and raw transaction data are never logged.
