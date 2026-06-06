@@ -3,6 +3,7 @@ import {runTransactionEvals} from "./transactions.evals";
 import {runFundEvals} from "./funds.evals";
 import {runHoldingsEvals} from "./holdings.evals";
 import {runRegressionEvals} from "./regression.evals";
+import { runResolverEvals } from "./resolver.evals";
 
 
 async function runAllEvals() {
@@ -12,6 +13,9 @@ async function runAllEvals() {
 
     console.log("\nRunning transaction evals...");
     await runTransactionEvals();
+
+    // console.log("\nRunning resolver evals...");
+    // await runResolverEvals();
 
     console.log("\nRunning fund evals...");
     await runFundEvals();

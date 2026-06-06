@@ -28,6 +28,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "fastest-levenshtein": "^1.0.16",
     "helmet": "^8.2.0",
     "morgan": "^1.11.0",
     "openai": "^6.42.0",

@@ -18,13 +18,13 @@ ORDER BY total DESC
 
 export const GET_TOP_MERCHANTS = `
 SELECT
-  merchant_normalized,
+  merchant_canon AS merchant,
   SUM(amount) AS total
 FROM transactions
 WHERE
   is_transfer = FALSE
   AND amount > 0
-GROUP BY merchant_normalized
+GROUP BY merchant_canon
 ORDER BY total DESC
 LIMIT 10
 `;
@@ -43,7 +43,7 @@ ORDER BY month
 
 export const GET_LARGEST_TRANSACTIONS = `
 SELECT
-    merchant_normalized,
+    merchant_canon AS merchant,
     amount,
     transaction_date
 FROM transactions
@@ -52,4 +52,17 @@ WHERE
     AND amount > 0
 ORDER BY amount DESC
 LIMIT 10
+`;
+
+export const GET_SPEND_BY_MERCHANT = `
+  SELECT
+    merchant_canon AS merchant,
+    SUM(amount) AS total_spend,
+    COUNT(*) AS transaction_count
+  FROM transactions
+  WHERE
+    merchant_canon ILIKE $1
+    AND is_transfer = FALSE
+    AND amount > 0
+  GROUP BY merchant_canon
 `;
