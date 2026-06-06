@@ -18,6 +18,8 @@ export const fundAnalyticsTool = createTool ({
 
   execute: async ({ context }) => {
     try {
+      console.log("TOOL EXECUTED");
+      console.dir(context);
     const validated = fundAnalyticsSchema.parse(context);
 
     switch (validated.analysis_type) {

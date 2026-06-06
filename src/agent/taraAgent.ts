@@ -10,7 +10,7 @@ import { SYSTEM_PROMPT } from "./systemPrompt.js";
 
 
 export const taraAgent = new Agent({
-  name: "tara-finance-agent",
+  name: "Tara",
   instructions: SYSTEM_PROMPT,
   model: "openai/gpt-4.1-mini",
   tools: {
